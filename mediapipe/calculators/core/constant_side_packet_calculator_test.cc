@@ -14,6 +14,7 @@
 
 #include <cstdint>
 #include <string>
+#include <vector>
 
 #include "absl/strings/string_view.h"
 #include "absl/strings/substitute.h"
@@ -60,6 +61,14 @@ TEST(ConstantSidePacketCalculatorTest, EveryPossibleType) {
   DoTestSingleSidePacket("{ bool_value: true }", true);
   DoTestSingleSidePacket<std::string>(R"({ string_value: "str" })", "str");
   DoTestSingleSidePacket<int64_t>("{ int64_value: 63 }", 63);
+  DoTestSingleSidePacket<std::vector<std::string>>(
+      "{ string_vector_value: {string_value: \"foo\" string_value: \"bar\"}}",
+      {"foo", "bar"});
+  DoTestSingleSidePacket<std::vector<float>>(
+      "{ float_vector_value: {float_value: 1.0 float_value: 2.0}}",
+      {1.0f, 2.0f});
+  DoTestSingleSidePacket<std::vector<int>>(
+      "{ int_vector_value: {int_value: 1 int_value: 2}}", {1, 2});
 }
 
 TEST(ConstantSidePacketCalculatorTest, MultiplePackets) {

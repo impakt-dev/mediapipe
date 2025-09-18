@@ -147,7 +147,6 @@ cc_library(
         "//mediapipe/framework/formats:image_frame_opencv",
         "//mediapipe/framework/formats:video_stream_header",
         "//mediapipe/framework/port:file_helpers",
-        "//mediapipe/framework/port:opencv_highgui",
         "//mediapipe/framework/port:opencv_imgproc",
         "//mediapipe/framework/port:opencv_video",
         "//mediapipe/framework/port:ret_check",
@@ -280,6 +279,9 @@ cc_library(
         "//mediapipe:ios": [
             "//mediapipe/util/android/file/base",
         ],
+        "//mediapipe:emscripten": [
+            "//mediapipe/util/android/file/base",
+        ],
         "//mediapipe:macos": [
             "//mediapipe/framework/port:file_helpers",
         ],
@@ -367,12 +369,11 @@ cc_test(
         "//mediapipe/framework/formats:video_stream_header",
         "//mediapipe/framework/port:gtest_main",
         "//mediapipe/framework/port:integral_types",
-        "//mediapipe/framework/port:opencv_highgui",
+        "//mediapipe/framework/port:logging",
         "//mediapipe/framework/port:opencv_imgproc",
         "//mediapipe/framework/port:opencv_video",
         "//mediapipe/framework/port:parse_text_proto",
         "//mediapipe/framework/tool:test_util",
-        "@com_google_absl//absl/log:absl_log",
     ],
 )
 
@@ -428,6 +429,7 @@ cc_test(
     copts = ["-DPARALLEL_INVOKER_ACTIVE"] + select({
         "//mediapipe:apple": [],
         "//mediapipe:android": [],
+        "//mediapipe:emscripten": ["-UPARALLEL_INVOKER_ACTIVE"],
         "//conditions:default": [],
     }),
     data = [
@@ -449,7 +451,7 @@ cc_test(
         "//mediapipe/framework/port:core_proto",
         "//mediapipe/framework/port:file_helpers",
         "//mediapipe/framework/port:gtest_main",
-        "//mediapipe/framework/port:opencv_highgui",
+        "//mediapipe/framework/port:opencv_imgcodecs",
         "//mediapipe/framework/port:status",
         "//mediapipe/framework/stream_handler:fixed_size_input_stream_handler",
         "//mediapipe/framework/stream_handler:sync_set_input_stream_handler",

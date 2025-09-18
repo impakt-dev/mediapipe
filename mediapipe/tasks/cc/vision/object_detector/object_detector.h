@@ -41,6 +41,18 @@ namespace vision {
 using ObjectDetectorResult =
     ::mediapipe::tasks::components::containers::DetectionResult;
 
+// Options related to non-maximum-suppression.
+struct NonMaxSuppressionOptions {
+  // Whether to use multiclass non-max-suppression. That is, each category
+  // processes non-max-suppression separately.
+  bool multiclass_nms = false;
+
+  // Overlapping threshold for non-maximum-suppression. Only used for
+  // models without built-in non-maximum-suppression, i.e., models that don't
+  // use the Detection_Postprocess TFLite Op
+  float min_suppression_threshold = 0.3f;
+};
+
 // The options for configuring a mediapipe object detector task.
 struct ObjectDetectorOptions {
   // Base options for configuring MediaPipe Tasks, such as specifying the TfLite
@@ -84,8 +96,11 @@ struct ObjectDetectorOptions {
   // The user-defined result callback for processing live stream data.
   // The result callback should only be specified when the running mode is set
   // to RunningMode::LIVE_STREAM.
-  std::function<void(absl::StatusOr<ObjectDetectorResult>, const Image&, int64)>
+  std::function<void(absl::StatusOr<ObjectDetectorResult>, const Image&,
+                     int64_t)>
       result_callback = nullptr;
+
+  NonMaxSuppressionOptions non_max_suppression_options;
 };
 
 // Performs object detection on single images, video frames, or live stream.
@@ -206,7 +221,7 @@ class ObjectDetector : public tasks::vision::core::BaseVisionTaskApi {
   // image_width) x [0, image_height)`, which are the dimensions of the
   // underlying image data.
   absl::StatusOr<ObjectDetectorResult> DetectForVideo(
-      mediapipe::Image image, int64 timestamp_ms,
+      mediapipe::Image image, int64_t timestamp_ms,
       std::optional<core::ImageProcessingOptions> image_processing_options =
           std::nullopt);
 
@@ -236,7 +251,7 @@ class ObjectDetector : public tasks::vision::core::BaseVisionTaskApi {
   //     longer be valid when the callback returns. To access the image data
   //     outside of the callback, callers need to make a copy of the image.
   //   - The input timestamp in milliseconds.
-  absl::Status DetectAsync(mediapipe::Image image, int64 timestamp_ms,
+  absl::Status DetectAsync(mediapipe::Image image, int64_t timestamp_ms,
                            std::optional<core::ImageProcessingOptions>
                                image_processing_options = std::nullopt);
 

@@ -5,7 +5,7 @@ licenses(["notice"])  # BSD license
 
 exports_files(["LICENSE"])
 
-OPENCV_LIBRARY_NAME = "libopencv_java3.so"
+OPENCV_LIBRARY_NAME = "libopencv_java4.so"
 
 OPENCVANDROIDSDK_NATIVELIBS_PATH = "sdk/native/staticlibs/"
 OPENCVANDROIDSDK_JNI_PATH = "sdk/native/jni/"
@@ -39,7 +39,7 @@ THIRD_PARTY = "sdk/native/3rdparty/libs/"
 ]]
 
 # [alias(
-#     name = "libopencv_java3_so_" + arch,
+#     name = "libopencv_java4_so_" + arch,
 #     actual = OPENCVANDROIDSDK_NATIVELIBS_PATH + arch + "/" + OPENCV_LIBRARY_NAME,
 #     visibility = ["//visibility:public"],
 # ) for arch in [

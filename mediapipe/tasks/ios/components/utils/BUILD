@@ -22,12 +22,14 @@ objc_library(
     hdrs = ["sources/MPPCosineSimilarity.h"],
     copts = [
         "-ObjC++",
-        "-std=c++17",
+        "-std=c++20",
+        "-Xclang=-fno-cxx-modules",
         "-x objective-c++",
     ],
     deps = [
         "//mediapipe/tasks/ios/common:MPPCommon",
         "//mediapipe/tasks/ios/common/utils:MPPCommonUtils",
         "//mediapipe/tasks/ios/components/containers:MPPEmbedding",
+        "//third_party/apple_frameworks:Foundation",
     ],
 )

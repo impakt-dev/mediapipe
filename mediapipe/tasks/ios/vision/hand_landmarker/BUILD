@@ -24,6 +24,7 @@ objc_library(
         "//mediapipe/tasks/ios/components/containers:MPPCategory",
         "//mediapipe/tasks/ios/components/containers:MPPLandmark",
         "//mediapipe/tasks/ios/core:MPPTaskResult",
+        "//third_party/apple_frameworks:Foundation",
     ],
 )
 
@@ -35,6 +36,7 @@ objc_library(
         ":MPPHandLandmarkerResult",
         "//mediapipe/tasks/ios/core:MPPTaskOptions",
         "//mediapipe/tasks/ios/vision/core:MPPRunningMode",
+        "//third_party/apple_frameworks:Foundation",
     ],
 )
 
@@ -42,7 +44,10 @@ objc_library(
     name = "MPPHandLandmarksConnections",
     hdrs = ["sources/MPPHandLandmarksConnections.h"],
     module_name = "MPPHandLandmarksConnections",
-    deps = ["//mediapipe/tasks/ios/components/containers:MPPConnection"],
+    deps = [
+        "//mediapipe/tasks/ios/components/containers:MPPConnection",
+        "//third_party/apple_frameworks:Foundation",
+    ],
 )
 
 objc_library(
@@ -51,7 +56,8 @@ objc_library(
     hdrs = ["sources/MPPHandLandmarker.h"],
     copts = [
         "-ObjC++",
-        "-std=c++17",
+        "-std=c++20",
+        "-Xclang=-fno-cxx-modules",
         "-x objective-c++",
     ],
     module_name = "MPPHandLandmarker",
@@ -69,5 +75,6 @@ objc_library(
         "//mediapipe/tasks/ios/vision/core:MPPVisionTaskRunner",
         "//mediapipe/tasks/ios/vision/hand_landmarker/utils:MPPHandLandmarkerOptionsHelpers",
         "//mediapipe/tasks/ios/vision/hand_landmarker/utils:MPPHandLandmarkerResultHelpers",
+        "//third_party/apple_frameworks:Foundation",
     ],
 )

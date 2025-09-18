@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import {assertNotNull, MPImageShaderContext} from '../../../../tasks/web/vision/core/image_shader_context';
+import {assertExists, MPImageShaderContext} from '../../../../tasks/web/vision/core/image_shader_context';
 
 /** Number of instances a user can keep alive before we raise a warning. */
 const INSTANCE_COUNT_WARNING_THRESHOLD = 250;
@@ -246,11 +246,11 @@ export class MPImage {
     if (!this.canvas) {
       throw new Error(
           'Conversion to different image formats require that a canvas ' +
-          'is passed when iniitializing the image.');
+          'is passed when initializing the image.');
     }
     if (!this.gl) {
-      this.gl = assertNotNull(
-          this.canvas.getContext('webgl2'),
+      this.gl = assertExists(
+          this.canvas.getContext('webgl2') as WebGL2RenderingContext,
           'You cannot use a canvas that is already bound to a different ' +
               'type of rendering context.');
     }

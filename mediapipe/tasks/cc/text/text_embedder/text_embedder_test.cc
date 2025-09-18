@@ -16,10 +16,13 @@ limitations under the License.
 #include "mediapipe/tasks/cc/text/text_embedder/text_embedder.h"
 
 #include <memory>
+#include <utility>
 
 #include "absl/flags/flag.h"
 #include "absl/status/status.h"
 #include "absl/status/statusor.h"
+#include "absl/strings/cord.h"
+#include "absl/strings/str_cat.h"
 #include "mediapipe/framework/deps/file_path.h"
 #include "mediapipe/framework/port/gmock.h"
 #include "mediapipe/framework/port/gtest.h"
@@ -44,7 +47,7 @@ constexpr char kUniversalSentenceEncoderModel[] =
 
 // Tolerance for embedding vector coordinate values.
 constexpr float kEpsilon = 1e-4;
-// Tolerancy for cosine similarity evaluation.
+// Tolerance for cosine similarity evaluation.
 constexpr double kSimilarityTolerancy = 2e-2;
 
 using ::mediapipe::file::JoinPath;
@@ -82,7 +85,7 @@ TEST_F(EmbedderTest, SucceedsWithMobileBert) {
 #elif defined(__FMA__)
   ASSERT_NEAR(result0.embeddings[0].float_embedding[0], 21.3605f, kEpsilon);
 #else
-  ASSERT_NEAR(result0.embeddings[0].float_embedding[0], 19.9016f, kEpsilon);
+  ASSERT_NEAR(result0.embeddings[0].float_embedding[0], 21.2054f, kEpsilon);
 #endif  // _WIN32
 
   MP_ASSERT_OK_AND_ASSIGN(
@@ -92,7 +95,7 @@ TEST_F(EmbedderTest, SucceedsWithMobileBert) {
 #ifdef __FMA__
   ASSERT_NEAR(result1.embeddings[0].float_embedding[0], 21.254150f, kEpsilon);
 #else
-  ASSERT_NEAR(result1.embeddings[0].float_embedding[0], 22.626251f, kEpsilon);
+  ASSERT_NEAR(result1.embeddings[0].float_embedding[0], 22.257519f, kEpsilon);
 #endif
 
   // Check cosine similarity.

@@ -14,6 +14,10 @@
 
 #include "mediapipe/objc/util.h"
 
+#import <CoreGraphics/CGImage.h>
+
+#include <cstdint>
+
 #include "absl/base/macros.h"
 #include "absl/log/absl_check.h"
 #include "absl/log/absl_log.h"
@@ -37,7 +41,8 @@ vImage_CGImageFormat vImageFormatForCVPixelFormat(OSType pixel_format) {
           .bitsPerComponent = 8,
           .bitsPerPixel = 8,
           .colorSpace = CGColorSpaceCreateDeviceGray(),
-          .bitmapInfo = kCGImageAlphaNone | kCGBitmapByteOrderDefault,
+          .bitmapInfo = kCGImageAlphaNone |
+                        static_cast<CGBitmapInfo>(kCGBitmapByteOrderDefault),
       };
 
     case kCVPixelFormatType_32BGRA:
@@ -45,7 +50,8 @@ vImage_CGImageFormat vImageFormatForCVPixelFormat(OSType pixel_format) {
           .bitsPerComponent = 8,
           .bitsPerPixel = 32,
           .colorSpace = NULL,
-          .bitmapInfo = kCGImageAlphaFirst | kCGBitmapByteOrder32Little,
+          .bitmapInfo = kCGImageAlphaFirst |
+                        static_cast<CGBitmapInfo>(kCGBitmapByteOrder32Little),
       };
 
     case kCVPixelFormatType_32RGBA:
@@ -53,7 +59,8 @@ vImage_CGImageFormat vImageFormatForCVPixelFormat(OSType pixel_format) {
           .bitsPerComponent = 8,
           .bitsPerPixel = 32,
           .colorSpace = NULL,
-          .bitmapInfo = kCGImageAlphaLast | kCGBitmapByteOrderDefault,
+          .bitmapInfo = kCGImageAlphaLast |
+                        static_cast<CGBitmapInfo>(kCGBitmapByteOrderDefault),
       };
 
     default:
@@ -496,8 +503,8 @@ absl::Status CreateCGImageFromCVPixelBuffer(CVPixelBufferRef image_buffer,
   switch (pixel_format) {
     case kCVPixelFormatType_32BGRA:
       color_space = CGColorSpaceCreateDeviceRGB();
-      bitmap_info =
-          kCGBitmapByteOrder32Little | kCGImageAlphaPremultipliedFirst;
+      bitmap_info = static_cast<CGBitmapInfo>(kCGBitmapByteOrder32Little) |
+                    kCGImageAlphaPremultipliedFirst;
       break;
 
     case kCVPixelFormatType_OneComponent8:
@@ -549,7 +556,8 @@ absl::Status CreateCVPixelBufferFromCGImage(
   size_t bytes_per_row = CVPixelBufferGetBytesPerRow(*pixel_buffer);
   CGContextRef context = CGBitmapContextCreate(
       base_address, width, height, 8, bytes_per_row, color_space,
-      kCGBitmapByteOrder32Little | kCGImageAlphaPremultipliedFirst);
+      static_cast<CGBitmapInfo>(kCGBitmapByteOrder32Little) |
+          kCGImageAlphaPremultipliedFirst);
   CGRect rect = CGRectMake(0, 0, width, height);
   CGContextClearRect(context, rect);
   CGContextDrawImage(context, rect, image);
@@ -639,7 +647,7 @@ std::unique_ptr<mediapipe::ImageFrame> CreateImageFrameForCVPixelBuffer(
   } else {
     frame = absl::make_unique<mediapipe::ImageFrame>(
         image_format, width, height, bytes_per_row,
-        reinterpret_cast<uint8*>(base_address), [image_buffer](uint8* x) {
+        reinterpret_cast<uint8_t*>(base_address), [image_buffer](uint8_t* x) {
           CVPixelBufferUnlockBaseAddress(image_buffer,
                                          kCVPixelBufferLock_ReadOnly);
           CVPixelBufferRelease(image_buffer);
@@ -660,22 +668,21 @@ CFDictionaryRef GetCVPixelBufferAttributesForGlCompatibility() {
     // actually causes CVOpenGLESTextureCache to fail. b/144850076
     const void* keys[] = {
 #if !TARGET_IPHONE_SIMULATOR
-      kCVPixelBufferIOSurfacePropertiesKey,
+        kCVPixelBufferIOSurfacePropertiesKey,
 #endif  // !TARGET_IPHONE_SIMULATOR
 
 #if TARGET_OS_OSX
-      kCVPixelFormatOpenGLCompatibility,
+        kCVPixelFormatOpenGLCompatibility,
 #else
-      kCVPixelFormatOpenGLESCompatibility,
+        kCVPixelFormatOpenGLESCompatibility,
 #endif  // TARGET_OS_OSX
     };
 
     const void* values[] = {
 #if !TARGET_IPHONE_SIMULATOR
-      empty_dict,
+        empty_dict,
 #endif  // !TARGET_IPHONE_SIMULATOR
-      kCFBooleanTrue
-    };
+        kCFBooleanTrue};
 
     attrs = CFDictionaryCreate(
         kCFAllocatorDefault, keys, values, ABSL_ARRAYSIZE(values),

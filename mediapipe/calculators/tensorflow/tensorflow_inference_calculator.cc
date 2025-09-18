@@ -13,6 +13,7 @@
 // limitations under the License.
 
 #include <algorithm>
+#include <cstdint>
 #include <map>
 #include <memory>
 #include <string>
@@ -514,7 +515,7 @@ class TensorFlowInferenceCalculator : public CalculatorBase {
                     keyed_tensors.second.end(), keyed_tensors.second[0]);
         }
         tf::Tensor concated;
-        const tf::Status concat_status =
+        const absl::Status concat_status =
             tf::tensor::Concat(keyed_tensors.second, &concated);
         ABSL_CHECK(concat_status.ok()) << concat_status.ToString();
         input_tensors.emplace_back(tag_to_tensor_map_[keyed_tensors.first],
@@ -546,10 +547,10 @@ class TensorFlowInferenceCalculator : public CalculatorBase {
       session_run_throttle->Acquire(1);
     }
     const int64_t run_start_time = absl::ToUnixMicros(clock_->TimeNow());
-    tf::Status tf_status;
+    absl::Status tf_status;
     {
 #if !defined(MEDIAPIPE_MOBILE) && !defined(__APPLE__)
-      tensorflow::profiler::TraceMe trace(absl::string_view(cc->NodeName()));
+      tsl::profiler::TraceMe trace(absl::string_view(cc->NodeName()));
 #endif
       tf_status = session_->Run(input_tensors, output_tensor_names,
                                 {} /* target_node_names */, &outputs);
@@ -579,7 +580,7 @@ class TensorFlowInferenceCalculator : public CalculatorBase {
 
     absl::WriterMutexLock l(&mutex_);
     // Set that we want to split on each index of the 0th dimension.
-    std::vector<tf::int64> split_vector(
+    std::vector<int64_t> split_vector(
         options_.pad_to_batch_size()
             ? options_.batch_size()
             : inference_state->batch_timestamps_.size(),
@@ -596,7 +597,7 @@ class TensorFlowInferenceCalculator : public CalculatorBase {
         }
       } else {
         std::vector<tf::Tensor> split_tensors;
-        const tf::Status split_status =
+        const absl::Status split_status =
             tf::tensor::Split(outputs[i], split_vector, &split_tensors);
         ABSL_CHECK(split_status.ok()) << split_status.ToString();
         // Loop over timestamps so that we don't copy the padding.

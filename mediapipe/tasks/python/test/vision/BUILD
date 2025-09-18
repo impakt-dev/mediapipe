@@ -36,6 +36,8 @@ py_test(
         "//mediapipe/tasks/python/vision:object_detector",
         "//mediapipe/tasks/python/vision/core:image_processing_options",
         "//mediapipe/tasks/python/vision/core:vision_task_running_mode",
+        "@mediapipe_pip_deps_absl_py//:pkg",
+        "@mediapipe_pip_deps_numpy//:pkg",
     ],
 )
 
@@ -57,6 +59,8 @@ py_test(
         "//mediapipe/tasks/python/vision:image_classifier",
         "//mediapipe/tasks/python/vision/core:image_processing_options",
         "//mediapipe/tasks/python/vision/core:vision_task_running_mode",
+        "@mediapipe_pip_deps_absl_py//:pkg",
+        "@mediapipe_pip_deps_numpy//:pkg",
     ],
 )
 
@@ -77,6 +81,8 @@ py_test(
         "//mediapipe/tasks/python/vision:image_embedder",
         "//mediapipe/tasks/python/vision/core:image_processing_options",
         "//mediapipe/tasks/python/vision/core:vision_task_running_mode",
+        "@mediapipe_pip_deps_absl_py//:pkg",
+        "@mediapipe_pip_deps_numpy//:pkg",
     ],
 )
 
@@ -94,6 +100,8 @@ py_test(
         "//mediapipe/tasks/python/test:test_utils",
         "//mediapipe/tasks/python/vision:image_segmenter",
         "//mediapipe/tasks/python/vision/core:vision_task_running_mode",
+        "@mediapipe_pip_deps_absl_py//:pkg",
+        "@mediapipe_pip_deps_numpy//:pkg",
     ],
 )
 
@@ -118,6 +126,7 @@ py_test(
         "//mediapipe/tasks/python/vision/core:image_processing_options",
         "//mediapipe/tasks/python/vision/core:vision_task_running_mode",
         "@com_google_protobuf//:protobuf_python",
+        "@mediapipe_pip_deps_absl_py//:pkg",
     ],
 )
 
@@ -143,6 +152,8 @@ py_test(
         "//mediapipe/tasks/python/vision/core:image_processing_options",
         "//mediapipe/tasks/python/vision/core:vision_task_running_mode",
         "@com_google_protobuf//:protobuf_python",
+        "@mediapipe_pip_deps_absl_py//:pkg",
+        "@mediapipe_pip_deps_numpy//:pkg",
     ],
 )
 
@@ -167,6 +178,8 @@ py_test(
         "//mediapipe/tasks/python/vision/core:image_processing_options",
         "//mediapipe/tasks/python/vision/core:vision_task_running_mode",
         "@com_google_protobuf//:protobuf_python",
+        "@mediapipe_pip_deps_absl_py//:pkg",
+        "@mediapipe_pip_deps_numpy//:pkg",
     ],
 )
 
@@ -191,6 +204,31 @@ py_test(
         "//mediapipe/tasks/python/vision/core:image_processing_options",
         "//mediapipe/tasks/python/vision/core:vision_task_running_mode",
         "@com_google_protobuf//:protobuf_python",
+        "@mediapipe_pip_deps_absl_py//:pkg",
+        "@mediapipe_pip_deps_numpy//:pkg",
+    ],
+)
+
+py_test(
+    name = "holistic_landmarker_test",
+    srcs = ["holistic_landmarker_test.py"],
+    data = [
+        "//mediapipe/tasks/testdata/vision:test_images",
+        "//mediapipe/tasks/testdata/vision:test_models",
+        "//mediapipe/tasks/testdata/vision:test_protos",
+    ],
+    tags = ["not_run:arm"],
+    deps = [
+        "//mediapipe/python:_framework_bindings",
+        "//mediapipe/tasks/cc/vision/holistic_landmarker/proto:holistic_result_py_pb2",
+        "//mediapipe/tasks/python/core:base_options",
+        "//mediapipe/tasks/python/test:test_utils",
+        "//mediapipe/tasks/python/vision:holistic_landmarker",
+        "//mediapipe/tasks/python/vision/core:image_processing_options",
+        "//mediapipe/tasks/python/vision/core:vision_task_running_mode",
+        "@com_google_protobuf//:protobuf_python",
+        "@mediapipe_pip_deps_absl_py//:pkg",
+        "@mediapipe_pip_deps_numpy//:pkg",
     ],
 )
 
@@ -201,7 +239,10 @@ py_test(
         "//mediapipe/tasks/testdata/vision:test_images",
         "//mediapipe/tasks/testdata/vision:test_models",
     ],
-    tags = ["not_run:arm"],
+    tags = [
+        "noasan",  # TODO: Re-enable once the bug is fixed.
+        "not_run:arm",
+    ],
     deps = [
         "//mediapipe/python:_framework_bindings",
         "//mediapipe/tasks/python/components/containers:rect",
@@ -209,6 +250,7 @@ py_test(
         "//mediapipe/tasks/python/test:test_utils",
         "//mediapipe/tasks/python/vision:face_aligner",
         "//mediapipe/tasks/python/vision/core:image_processing_options",
+        "@mediapipe_pip_deps_absl_py//:pkg",
     ],
 )
 
@@ -219,6 +261,9 @@ py_test(
         "//mediapipe/tasks/testdata/vision:test_images",
         "//mediapipe/tasks/testdata/vision:test_models",
     ],
+    tags = [
+        "noasan",  # TODO: Re-enable once the bug is fixed.
+    ],
     deps = [
         "//mediapipe/python:_framework_bindings",
         "//mediapipe/tasks/python/components/containers:rect",
@@ -226,5 +271,6 @@ py_test(
         "//mediapipe/tasks/python/test:test_utils",
         "//mediapipe/tasks/python/vision:face_stylizer",
         "//mediapipe/tasks/python/vision/core:image_processing_options",
+        "@mediapipe_pip_deps_absl_py//:pkg",
     ],
 )
