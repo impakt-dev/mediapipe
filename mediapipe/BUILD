@@ -256,6 +256,15 @@ cc_library(
     ),
 )
 
+config_setting(
+    name="ios_build",
+    values={"apple_platform_type": "ios"},
+)
+
+config_setting(
+    name="macos_build",
+    values={"apple_platform_type": "macos"},
+)
 
 cc_library(
     name="mediagraph_lib",
@@ -279,8 +288,12 @@ cc_library(
     alwayslink=1,
     linkopts=select(
         {
-            # dead_strip is a darwin only option
-            "@bazel_tools//src/conditions:darwin": [
+            ":ios_build": [
+                "-Wl,-dead_strip",
+                "-flto",
+                "-s",
+            ],
+            ":macos_build": [
                 "-Wl,-dead_strip",
                 "-flto",
                 "-s",
