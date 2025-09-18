@@ -275,14 +275,35 @@ cc_library(
         "exported.h",
         "concurrentqueue.h",
     ],
+    # Important, otherwise it will strip code that is used by the SDK. Potentially could be optimized to prevent specific code from being stripped.
     alwayslink=1,
-    linkopts=["-Wl,-dead_strip", "-flto", "-s"],
+    linkopts=select(
+        {
+            # dead_strip is a darwin only option
+            "@bazel_tools//src/conditions:darwin": [
+                "-Wl,-dead_strip",
+                "-flto",
+                "-s",
+            ],
+            "//conditions:default": [
+                "-Wl,--gc-sections",  # dead code strip
+                "-Wl,--icf=all",  # identical code folding (lld)
+                "-flto",
+                "-s",  # strip (lld accepts -s)
+                # To abide by 16 kb page Android requirement
+                "-Wl,-z,max-page-size=0x4000",
+                "-Wl,-z,common-page-size=0x4000",
+            ],
+        }
+    ),
     copts=[
         "-Ofast",
         "-funroll-loops",
         "-fomit-frame-pointer",
         # Avoid setting flto=full on Linux as it breaks the compiler
         "-flto",
+        "-ffunction-sections",
+        "-fdata-sections",
     ],
     visibility=["//visibility:public"],
     deps=[":mediapipe_lib"],
